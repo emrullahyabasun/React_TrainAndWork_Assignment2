@@ -1,134 +1,102 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
-
-function Cart({ cart, removeFromCart }) {
-
-  const calculateSubtotal = () => {
-    return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  };
-
-  if (!Array.isArray(cart)) {
-    // cart bir dizi değilse, bir hata mesajı veya boş bir görünüm döndür
-    return <div>Cart bir dizi degil</div>;
-  }
+import React, {Component} from 'react';
+import Hero from "../components/Hero";
+import {Link} from "react-router-dom";
 
 
+class Cart extends Component {
+    render() {
+        return (
+            <>
+                <Hero title="Cart" bread="Cart"/>
+                <div className="page-content-wrapper">
+                    <div className="shopping-cart-area">
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-lg-12">
+                                    <div className="cart-table-container">
+                                        <table className="cart-table">
+                                            <thead>
+                                            <tr>
+                                                <th className="product-name" colSpan={2}>Product</th>
+                                                <th className="product-price">Price</th>
+                                                <th className="product-quantity">Quantity</th>
+                                                <th className="product-subtotal">Total</th>
+                                                <th className="product-remove">&nbsp;</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {this.props.cart.map((item) => (
+                                                <tr key={item.product.id}>
+                                                    <td className="product-thumbnail">
+                                                        <Link to={"/product/" + item.product.slug}>
+                                                            <img
+                                                                src={process.env.PUBLIC_URL + "/" + item.product.image}
+                                                                className="img-fluid" alt=""/>
+                                                        </Link>
+                                                    </td>
+                                                    <td className="product-name">
+                                                        <Link to={"/product/" + item.product.slug}>
+                                                            {item.product.title}
+                                                        </Link>
 
-  return (
+                                                    </td>
+                                                    <td className="product-price">
+                                                        <span className="price">${item.product.price}</span>
+                                                    </td>
+                                                    <td className="product-quantity">
+                                                        <div className="pro-qty d-inline-block mx-0">
+                                                            <input type="text" defaultValue={item.quantity}/>
+                                                        </div>
+                                                    </td>
+                                                    <td className="total-price">
+                                                        <span
+                                                            className="price">${item.product.price * item.quantity}</span>
+                                                    </td>
+                                                    <td className="product-remove">
+                                                        <button onClick={() => this.props.removeToCart(item.product)}>
+                                                            <i className="pe-7s-close"/>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
 
-    <div class="page-content-wrapper">
-      {/* <!--=======  shopping cart wrapper  =======--> */}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
 
-      <div class="shopping-cart-area">
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-12">
-              {/* <!--=======  cart table  =======--> */}
-
-              <div class="cart-table-container">
-                <table class="cart-table">
-                  <thead>
-                    <tr>
-                      <th class="product-name" colspan="2">Product</th>
-                      <th class="product-price">Price</th>
-                      <th class="product-quantity">Quantity</th>
-                      <th class="product-subtotal">Total</th>
-                      <th class="product-remove">&nbsp;</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {cart.map((item, index) => (
-                      <tr key={index}>
-                        <td className="product-thumbnail">
-                          <Link to={`/product/${item.slug}`}>
-                            <img src={item.img[0]} className="img-fluid" alt={item.name} />
-                          </Link>
-                        </td>
-                        <td className="product-name">
-                          <Link to={`/product/${item.slug}`}>{item.name}</Link>
-                          {/* Diğer detaylar */}
-                        </td>
-                        <td className="product-price"><span className="price">${item.price}</span></td>
-                        <td className="product-quantity">{item.quantity}</td>
-                        <td className="total-price"><span className="price">${item.price * item.quantity}</span></td>
-                        <td className="product-remove">
-                          <a onClick={() => removeFromCart(item.id)} style={{ cursor: "pointer" }}>
-                            <i className="pe-7s-close"></i>
-                          </a>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* <!--=======  End of cart table  =======--> */}
-            </div>
-            <div class="col-lg-12">
-              {/* <!--=======  coupon area  =======--> */}
-
-              <div class="cart-coupon-area">
-                <div class="row align-items-center">
-                  <div class="col-lg-6">
-                    {/* <!--=======  coupon form  =======--> */}
-
-                    <div class="coupon-form">
-                      <form action="#">
-                        <div class="row row-5">
-                          <div class="col-md-7 col-sm-7">
-                            <input type="text" placeholder="Enter your coupon code" />
-                          </div>
-                          <div class="col-md-5 col-sm-5">
-                            <button class="theme-button theme-button--silver">APPLY COUPON</button>
-                          </div>
+                                <div className="col-lg-6 offset-lg-6">
+                                    <div className="cart-calculation-area">
+                                        <h2 className="cart-calculation-area__title">Cart totals</h2>
+                                        <table className="cart-calculation-table">
+                                            <tbody>
+                                            <tr>
+                                                <th>SUBTOTAL</th>
+                                                <td className="subtotal">{this.props.cart.reduce((a, c) => a + c.product.price * c.quantity, 0)}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>TOTAL</th>
+                                                <td className="total">{this.props.cart.reduce((a, c) => a + c.product.price * c.quantity, 0)}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <div className="cart-calculation-button">
+                                            <Link to="/checkout"
+                                                  className="theme-button theme-button--alt theme-button--checkout">
+                                                PROCEED TO CHECKOUT
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                      </form>
                     </div>
-
-                    {/* <!--=======  End of coupon form  =======--> */}
-                  </div>
-
-                  <div class="col-lg-6 text-start text-lg-end">
-                    {/* <!--=======  update cart button  =======--> */}
-
-                    <Link to="/">UPDATE CART</Link>
-
-                    {/* <!--=======  End of update cart button  =======--> */}
-                  </div>
                 </div>
-              </div>
 
-              {/* <!--=======  End of coupon area  =======--> */}
-            </div>
-
-            <div class="col-lg-6 offset-lg-6">
-              <div class="cart-calculation-area">
-                <h2 class="cart-calculation-area__title">Cart totals</h2>
-
-                <table class="cart-calculation-table">
-                  <tr>
-                    <th>SUBTOTAL</th>
-                    <td className="subtotal">${calculateSubtotal().toFixed(2)}</td>
-                  </tr>
-                  <tr>
-                    <th>TOTAL</th>
-                    <td className="total">${calculateSubtotal().toFixed(2)}</td>
-                  </tr>
-                </table>
-
-                <div class="cart-calculation-button">
-                  <button class="theme-button theme-button--alt theme-button--checkout">PROCEED TO CHECKOUT</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* <!--=======  End of shopping cart wrapper  =======--> */}
-    </div>
-  )
+            </>
+        );
+    }
 }
 
-export default Cart
+
+export default Cart;

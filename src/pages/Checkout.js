@@ -1,256 +1,186 @@
-import React from 'react'
+import React, {Component} from 'react';
+import Hero from "../components/Hero";
 
-function Checkout() {
-  return (
-    <div class="page-content-wrapper">
-      {/* <!--=======  checkout page wrapper  =======--> */}
+class Checkout extends Component {
+    state = {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phoneNumber: '',
+        companyName: '',
+        addressLine1: '',
+        addressLine2: '',
+        country: '',
+        townCity: '',
+        state: '',
+        zipCode: '',
+    };
 
-      <div class="checkout-page-wrapper">
-        <div class="container">
-          <div class="row">
-            <div class="col-12">
-              <div class="checkout-form">
-                {/* <!-- Checkout Form s--> */}
-                <form action="#" >
-                  <div class="row row-40">
+    handleInputChange = (e) => {
+        this.setState({[e.target.name]: e.target.value});
+    };
 
-                    <div class="col-lg-7">
 
-                      {/* <!-- Billing Address --> */}
-                      <div id="billing-form" class="billing-form">
-                        <h4 class="checkout-title">Billing Address</h4>
+    handleFormSubmit = (e) => {
+        e.preventDefault();
 
-                        <div class="row">
+        const order = {
+            id: Math.floor(Math.random() * 1000000000),
+            trackingid: `FURN-${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
+            products: this.props.cart.map((item) => item.product.id),
+        };
 
-                          <div class="col-md-6 col-12">
-                            <label>First Name*</label>
-                            <input type="text" placeholder="First Name" />
-                          </div>
 
-                          <div class="col-md-6 col-12">
-                            <label>Last Name*</label>
-                            <input type="text" placeholder="Last Name" />
-                          </div>
+        fetch('http://localhost:3000/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(order),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Order successfully saved:', data);
+                this.props.clearCart();
+                alert(`Your order has been placed! Tracking ID: ${order.trackingid}`);
+            })
+            .catch(error => {
+                console.error('Error saving the order:', error);
+            });
+    };
 
-                          <div class="col-md-6 col-12">
-                            <label>Email Address*</label>
-                            <input type="email" placeholder="Email Address" />
-                          </div>
-
-                          <div class="col-md-6 col-12">
-                            <label>Phone no*</label>
-                            <input type="text" placeholder="Phone number" />
-                          </div>
-
-                          <div class="col-12">
-                            <label>Company Name</label>
-                            <input type="text" placeholder="Company Name" />
-                          </div>
-
-                          <div class="col-12">
-                            <label>Address*</label>
-                            <input type="text" placeholder="Address line 1" />
-                            <input type="text" placeholder="Address line 2" />
-                          </div>
-
-                          <div class="col-md-6 col-12">
-                            <label>Country*</label>
-                            <select class="nice-select">
-                              <option>Bangladesh</option>
-                              <option>China</option>
-                              <option>country</option>
-                              <option>India</option>
-                              <option>Japan</option>
-                            </select>
-                          </div>
-
-                          <div class="col-md-6 col-12">
-                            <label>Town/City*</label>
-                            <input type="text" placeholder="Town/City" />
-                          </div>
-
-                          <div class="col-md-6 col-12">
-                            <label>State*</label>
-                            <input type="text" placeholder="State" />
-                          </div>
-
-                          <div class="col-md-6 col-12">
-                            <label>Zip Code*</label>
-                            <input type="text" placeholder="Zip Code" />
-                          </div>
-
-                          <div class="col-12">
-                            <div class="check-box">
-                              <input type="checkbox" id="create_account" />
-                              <label for="create_account">Create an Acount?</label>
+    render() {
+        return (
+            <>
+                <Hero title="Checkout"/>
+                <div className="page-content-wrapper">
+                    <div className="checkout-page-wrapper">
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-12">
+                                    <div className="checkout-form">
+                                        <form onSubmit={this.handleFormSubmit}>
+                                            <div className="row row-40">
+                                                <div className="col-lg-7">
+                                                    <div id="billing-form" className="billing-form">
+                                                        <h4 className="checkout-title">Billing &amp; Shipping
+                                                            Address</h4>
+                                                        <div className="row">
+                                                            <div className="col-md-6 col-12">
+                                                                <label htmlFor="firstName">First Name*</label>
+                                                                <input type="text" id="firstName" name="firstName"
+                                                                       placeholder="First Name"
+                                                                       onChange={this.handleInputChange}/>
+                                                            </div>
+                                                            <div className="col-md-6 col-12">
+                                                                <label htmlFor="lastName">Last Name*</label>
+                                                                <input type="text" id="lastName" name="lastName"
+                                                                       placeholder="Last Name"
+                                                                       onChange={this.handleInputChange}/>
+                                                            </div>
+                                                            <div className="col-md-6 col-12">
+                                                                <label htmlFor="email">Email Address*</label>
+                                                                <input type="email" id="email" name="email"
+                                                                       placeholder="Email Address"
+                                                                       onChange={this.handleInputChange}/>
+                                                            </div>
+                                                            <div className="col-md-6 col-12">
+                                                                <label htmlFor="phoneNumber">Phone no*</label>
+                                                                <input type="text" id="phoneNumber" name="phoneNumber"
+                                                                       placeholder="Phone number"
+                                                                       onChange={this.handleInputChange}/>
+                                                            </div>
+                                                            <div className="col-12">
+                                                                <label htmlFor="companyName">Company Name</label>
+                                                                <input type="text" id="companyName" name="companyName"
+                                                                       placeholder="Company Name"
+                                                                       onChange={this.handleInputChange}/>
+                                                            </div>
+                                                            <div className="col-12">
+                                                                <label htmlFor="addressLine1">Address*</label>
+                                                                <input type="text" id="addressLine1" name="addressLine1"
+                                                                       placeholder="Address line 1"
+                                                                       onChange={this.handleInputChange}/>
+                                                                <input type="text" id="addressLine2" name="addressLine2"
+                                                                       placeholder="Address line 2"
+                                                                       onChange={this.handleInputChange}/>
+                                                            </div>
+                                                            <div className="col-md-6 col-12">
+                                                                <label htmlFor="country">Country*</label>
+                                                                <select id="country" name="country"
+                                                                        className="nice-select"
+                                                                        onChange={this.handleInputChange}>
+                                                                    <option value="İstanbul">İstanbul</option>
+                                                                    <option value="Ankara">Ankara</option>
+                                                                    <option value="Hatay">Hatay</option>
+                                                                    <option value="Antalya">Antalya</option>
+                                                                </select>
+                                                            </div>
+                                                            <div className="col-md-6 col-12">
+                                                                <label htmlFor="townCity">Town/City*</label>
+                                                                <input type="text" id="townCity" name="townCity"
+                                                                       placeholder="Town/City"
+                                                                       onChange={this.handleInputChange}/>
+                                                            </div>
+                                                            <div className="col-md-6 col-12">
+                                                                <label htmlFor="state">State*</label>
+                                                                <input type="text" id="state" name="state"
+                                                                       placeholder="State"
+                                                                       onChange={this.handleInputChange}/>
+                                                            </div>
+                                                            <div className="col-md-6 col-12">
+                                                                <label htmlFor="zipCode">Zip Code*</label>
+                                                                <input type="text" id="zipCode" name="zipCode"
+                                                                       placeholder="Zip Code"
+                                                                       onChange={this.handleInputChange}/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="col-lg-5">
+                                                    <div className="row">
+                                                        <div className="col-12">
+                                                            <h4 className="checkout-title">Cart Total</h4>
+                                                            <div className="checkout-cart-total">
+                                                                <h4>Product <span>Total</span></h4>
+                                                                <ul>
+                                                                    {this.props.cart.map((item) => (
+                                                                        <li>{item.product.title}
+                                                                            X
+                                                                            {item.quantity}
+                                                                            <span>${item.product.price * item.quantity}</span>
+                                                                        </li>
+                                                                    ))}
+                                                                </ul>
+                                                                <p>Sub
+                                                                    Total <span>${this.props.cart.reduce((a, c) => a + c.product.price * c.quantity, 0)}</span>
+                                                                </p>
+                                                                <p>Shipping Fee <span>$15.00</span></p>
+                                                                <h4>Grand
+                                                                    Total <span>${this.props.cart.reduce((a, c) => a + c.product.price * c.quantity, 0) + 15}</span>
+                                                                </h4>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-12">
+                                                            <button className="theme-button place-order-btn"
+                                                                    type="submit">
+                                                                PLACE ORDER
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="check-box">
-                              <input type="checkbox" id="shiping_address" data-shipping />
-                              <label for="shiping_address">Ship to Different Address</label>
-                            </div>
-                          </div>
-
                         </div>
-
-                      </div>
-                      {/* 
-                        <!-- Shipping Address --> */}
-                      <div id="shipping-form" class="shipping-form">
-                        <h4 class="checkout-title">Shipping Address</h4>
-
-                        <div class="row">
-
-                          <div class="col-md-6 col-12">
-                            <label>First Name*</label>
-                            <input type="text" placeholder="First Name" />
-                          </div>
-
-                          <div class="col-md-6 col-12">
-                            <label>Last Name*</label>
-                            <input type="text" placeholder="Last Name" />
-                          </div>
-
-                          <div class="col-md-6 col-12">
-                            <label>Email Address*</label>
-                            <input type="email" placeholder="Email Address" />
-                          </div>
-
-                          <div class="col-md-6 col-12">
-                            <label>Phone no*</label>
-                            <input type="text" placeholder="Phone number" />
-                          </div>
-
-                          <div class="col-12">
-                            <label>Company Name</label>
-                            <input type="text" placeholder="Company Name" />
-                          </div>
-
-                          <div class="col-12">
-                            <label>Address*</label>
-                            <input type="text" placeholder="Address line 1" />
-                            <input type="text" placeholder="Address line 2" />
-                          </div>
-
-                          <div class="col-md-6 col-12">
-                            <label>Country*</label>
-                            <select class="nice-select">
-                              <option>Bangladesh</option>
-                              <option>China</option>
-                              <option>country</option>
-                              <option>India</option>
-                              <option>Japan</option>
-                            </select>
-                          </div>
-
-                          <div class="col-md-6 col-12">
-                            <label>Town/City*</label>
-                            <input type="text" placeholder="Town/City" />
-                          </div>
-
-                          <div class="col-md-6 col-12">
-                            <label>State*</label>
-                            <input type="text" placeholder="State" />
-                          </div>
-
-                          <div class="col-md-6 col-12">
-                            <label>Zip Code*</label>
-                            <input type="text" placeholder="Zip Code" />
-                          </div>
-
-                        </div>
-
-                      </div>
-
                     </div>
-
-                    <div class="col-lg-5">
-                      <div class="row">
-
-                        {/* <!-- Cart Total --> */}
-                        <div class="col-12">
-
-                          <h4 class="checkout-title">Cart Total</h4>
-
-                          <div class="checkout-cart-total">
-
-                            <h4>Product <span>Total</span></h4>
-
-                            <ul>
-                              <li>Cillum dolore tortor nisl X 01 <span>$25.00</span></li>
-                              <li>Auctor gravida pellentesque X 02 <span>$50.00</span></li>
-                              <li>Condimentum posuere consectetur X 01 <span>$29.00</span></li>
-                              <li>Habitasse dictumst elementum X 01 <span>$10.00</span></li>
-                            </ul>
-
-                            <p>Sub Total <span>$104.00</span></p>
-                            <p>Shipping Fee <span>$00.00</span></p>
-
-                            <h4>Grand Total <span>$104.00</span></h4>
-
-                          </div>
-
-                        </div>
-                        {/* 
-                            <!-- Payment Method --> */}
-                        <div class="col-12">
-
-                          <h4 class="checkout-title">Payment Method</h4>
-
-                          <div class="checkout-payment-method">
-
-                            <div class="single-method">
-                              <input type="radio" id="payment_check" name="payment-method" value="check" />
-                              <label for="payment_check">Check Payment</label>
-                              <p data-method="check">Please send a Check to Store name with Store Street, Store Town, Store State, Store Postcode, Store Country.</p>
-                            </div>
-
-                            <div class="single-method">
-                              <input type="radio" id="payment_bank" name="payment-method" value="bank" />
-                              <label for="payment_bank">Direct Bank Transfer</label>
-                              <p data-method="bank">Please send a Check to Store name with Store Street, Store Town, Store State, Store Postcode, Store Country.</p>
-                            </div>
-
-                            <div class="single-method">
-                              <input type="radio" id="payment_cash" name="payment-method" value="cash" />
-                              <label for="payment_cash">Cash on Delivery</label>
-                              <p data-method="cash">Please send a Check to Store name with Store Street, Store Town, Store State, Store Postcode, Store Country.</p>
-                            </div>
-
-                            <div class="single-method">
-                              <input type="radio" id="payment_paypal" name="payment-method" value="paypal" />
-                              <label for="payment_paypal">Paypal</label>
-                              <p data-method="paypal">Please send a Check to Store name with Store Street, Store Town, Store State, Store Postcode, Store Country.</p>
-                            </div>
-
-                            <div class="single-method">
-                              <input type="radio" id="payment_payoneer" name="payment-method" value="payoneer" />
-                              <label for="payment_payoneer">Payoneer</label>
-                              <p data-method="payoneer">Please send a Check to Store name with Store Street, Store Town, Store State, Store Postcode, Store Country.</p>
-                            </div>
-
-                            <div class="single-method">
-                              <input type="checkbox" id="accept_terms" />
-                              <label for="accept_terms">I’ve read and accept the terms & conditions</label>
-                            </div>
-
-                          </div>
-
-                          <button class="theme-button place-order-btn">PLACE ORDER</button>
-
-                        </div>
-
-                      </div>
-                    </div>
-
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+                </div>
+            </>
+        );
+    }
 }
 
-export default Checkout
+
+export default Checkout;
